@@ -276,9 +276,12 @@ export default function App() {
             </div>
             
             <div className="hidden md:flex justify-end w-48">
-              <button className="bg-white/5 border border-white/10 text-white px-6 py-2 rounded-full text-[12px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">
-                Get Started
-              </button>
+              <a 
+                href="https://app.kortexai.online"
+                className="bg-white/5 border border-white/10 text-white px-6 py-2 rounded-full text-[12px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center cursor-pointer"
+              >
+                Launch App
+              </a>
             </div>
 
             {/* Mobile Hamburger Menu */}
@@ -310,7 +313,10 @@ export default function App() {
           </FadeIn>
 
           <FadeIn delay={0.3} className="flex justify-center mb-16">
-            <button className="group relative px-12 py-5 bg-[#3A7BD5] text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(58,123,213,0.4)] border border-white/20">
+            <a 
+              href="https://app.kortexai.online"
+              className="group relative px-12 py-5 bg-[#3A7BD5] text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(58,123,213,0.4)] border border-white/20 flex items-center justify-center cursor-pointer"
+            >
               <span className="relative z-10 flex items-center gap-2">
                 Start Learning
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -322,7 +328,7 @@ export default function App() {
                 animate={{ x: '100%' }}
                 transition={{ repeat: Infinity, duration: 2.2, ease: "linear" }}
               />
-            </button>
+            </a>
           </FadeIn>
 
           {/* Input Component matching reference */}
@@ -342,7 +348,7 @@ export default function App() {
                   <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:bg-white/10 transition-colors cursor-pointer">
                     <Library className="w-5 h-5" />
                   </div>
-                  <button className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer shadow-[0_0_15px_rgba(58,123,213,0.4)]">
+                  <button className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer shadow-[0_0_15px_rgba(58,123,213,0.4)]" onClick={() => window.location.href='https://app.kortexai.online'}>
                     Start
                   </button>
                 </div>
@@ -810,7 +816,7 @@ export default function App() {
                 <h5 className="font-semibold text-white mb-6 text-sm">All Pages</h5>
                 <ul className="space-y-3">
                   <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Home</a></li>
-                  <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">App</a></li>
+                  <li><a href="https://app.kortexai.online" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">App</a></li>
                   <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blogs</a></li>
                   <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blog Open</a></li>
                   <li><a href="#contact" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Contact</a></li>
