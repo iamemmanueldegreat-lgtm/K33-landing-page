@@ -345,7 +345,7 @@ export default function App() {
                     <Library className="w-5 h-5" />
                   </div>
                   <button className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer shadow-[0_0_15px_rgba(58,123,213,0.4)]">
-                    Start Learning
+                    Start
                   </button>
                 </div>
               </div>
