@@ -209,30 +209,31 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [activeFeature, setActiveFeature] = useState(0);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.getAttribute('data-index'));
-            if (!isNaN(index)) {
-              setActiveFeature(index);
-            }
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.6, // Trigger when 60% of the card is visible
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+    const cards = container.querySelectorAll('.feature-card-wrapper');
+    if (!cards.length) return;
+    
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    
+    let minDist = Infinity;
+    let minIndex = 0;
+    
+    cards.forEach((card, i) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      const dist = Math.abs(containerCenter - cardCenter);
+      if (dist < minDist) {
+        minDist = dist;
+        minIndex = i;
       }
-    );
+    });
 
-    const cards = document.querySelectorAll('.feature-card-wrapper');
-    cards.forEach((card) => observer.observe(card));
-
-    return () => observer.disconnect();
-  }, []);
+    if (activeFeature !== minIndex) {
+      setActiveFeature(minIndex);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0F172A] selection:bg-[#3A7BD5]/30 relative overflow-hidden font-sans">
@@ -260,13 +261,9 @@ export default function App() {
         <div className="w-full max-w-7xl pointer-events-auto">
           <div className="floating-nav px-6 md:px-10 py-4 flex items-center justify-between shadow-2xl">
             <div className="flex items-center gap-2 md:gap-3 w-auto md:w-56 group cursor-pointer">
-              <div className="relative w-8 h-8 md:w-10 md:h-10 overflow-hidden rounded-lg border border-white/10 group-hover:border-white/30 transition-all">
-                <img 
-                  src="/src/assets/images/kortex_brain_logo_1778051092285.png" 
-                  alt="Kortex Ai Logo" 
-                  className="w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-500"
-                  referrerPolicy="no-referrer"
-                />
+              <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 group-hover:border-[#3A7BD5]/50 group-hover:bg-[#3A7BD5]/10 transition-all overflow-hidden">
+                <BrainCircuit className="w-5 h-5 md:w-6 md:h-6 text-[#3A7BD5] group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="text-lg md:text-xl font-sans font-bold tracking-tighter text-white uppercase">Kortex Ai</span>
             </div>
@@ -387,12 +384,12 @@ export default function App() {
               <p className="text-lg text-[#94A3B8] font-light">Four core pillars designed to transform your academic performance through personalized AI integration.</p>
             </div>
           </FadeIn>
-
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 lg:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
+          
+          <div onScroll={handleScroll} className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-[7.5vw] md:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
             
             {/* Card 1 - Practice Quizzes */}
-            <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={0}>
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
+            <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-64 h-64 bg-[#3A7BD5]/10 blur-[60px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                
@@ -409,14 +406,15 @@ export default function App() {
                     src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" 
                     alt="Practice Quizzes" 
                     className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-90 mix-blend-screen"
+                    referrerPolicy="no-referrer"
                   />
                </div>
               </div>
             </FadeIn>
 
             {/* Card 2 - AI Tutors */}
-            <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={1}>
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
+            <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                
@@ -433,14 +431,15 @@ export default function App() {
                     src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=600&q=80" 
                     alt="AI Tutors" 
                     className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-90 mix-blend-screen"
+                    referrerPolicy="no-referrer"
                   />
                </div>
               </div>
             </FadeIn>
 
             {/* Card 3 - Notes */}
-            <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={2}>
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
+            <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
@@ -455,14 +454,15 @@ export default function App() {
                     src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=400&q=80" 
                     alt="Notes" 
                     className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-80 mix-blend-screen"
+                    referrerPolicy="no-referrer"
                   />
                </div>
               </div>
             </FadeIn>
 
             {/* Card 4 - Library */}
-            <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={3}>
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
+            <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
@@ -477,6 +477,7 @@ export default function App() {
                     src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80" 
                     alt="Library" 
                     className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-80 mix-blend-screen"
+                    referrerPolicy="no-referrer"
                   />
                </div>
               </div>
@@ -765,14 +766,11 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
             <div className="col-span-1 md:col-span-4 pr-8">
               <FadeIn>
-                <div className="flex items-center gap-3 w-48 mb-6">
-                  <div className="w-2 h-6 bg-white/80 rounded-[2px]" />
-                  <div className="flex gap-1 opacity-80">
-                    <div className="w-1 h-4 bg-[#3A7BD5] rounded-[1px] mt-1" />
-                    <div className="w-1 h-5 bg-[#3A7BD5] rounded-[1px] mt-0.5" />
-                    <div className="w-1 h-3 bg-[#3A7BD5] rounded-[1px] mt-1.5" />
+                <div className="flex items-center gap-2 md:gap-3 w-48 mb-6 group cursor-pointer">
+                  <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 group-hover:border-[#3A7BD5]/50 transition-all">
+                    <BrainCircuit className="w-4 h-4 text-[#3A7BD5]" />
                   </div>
-                  <span className="text-2xl font-sans font-bold tracking-tight text-white ml-2">Kortex AI</span>
+                  <span className="text-xl font-sans font-bold tracking-tight text-white ml-1">Kortex AI</span>
                 </div>
                 <p className="text-[#a1a1aa] font-light text-sm max-w-[280px] mb-4 leading-relaxed">Empowering Your Projects, Enhancing Your Success, Every Step of the Way.</p>
                 <div className="text-xs text-[#a1a1aa] mb-8 space-y-2">
