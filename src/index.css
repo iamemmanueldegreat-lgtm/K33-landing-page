@@ -7,6 +7,10 @@
   --font-serif: "Playfair Display", ui-serif, Georgia, serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: #050505;

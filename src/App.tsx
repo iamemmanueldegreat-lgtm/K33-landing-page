@@ -209,29 +209,30 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [activeFeature, setActiveFeature] = useState(0);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const cards = container.querySelectorAll('.feature-card-wrapper');
-    if (!cards.length) return;
-    
-    const containerCenterX = container.getBoundingClientRect().left + container.clientWidth / 2;
-    let minDist = Infinity;
-    let minIndex = 0;
-    
-    cards.forEach((card, i) => {
-      const rect = card.getBoundingClientRect();
-      const cardCenter = rect.left + rect.width / 2;
-      const dist = Math.abs(containerCenterX - cardCenter);
-      if (dist < minDist) {
-        minDist = dist;
-        minIndex = i;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.getAttribute('data-index'));
+            if (!isNaN(index)) {
+              setActiveFeature(index);
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.6, // Trigger when 60% of the card is visible
       }
-    });
+    );
 
-    if (activeFeature !== minIndex) {
-      setActiveFeature(minIndex);
-    }
-  };
+    const cards = document.querySelectorAll('.feature-card-wrapper');
+    cards.forEach((card) => observer.observe(card));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0F172A] selection:bg-[#3A7BD5]/30 relative overflow-hidden font-sans">
@@ -387,10 +388,10 @@ export default function App() {
             </div>
           </FadeIn>
 
-          <div onScroll={handleScroll} className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 lg:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-6 lg:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
             
             {/* Card 1 - Practice Quizzes */}
-            <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center">
+            <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={0}>
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-64 h-64 bg-[#3A7BD5]/10 blur-[60px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
@@ -414,7 +415,7 @@ export default function App() {
             </FadeIn>
 
             {/* Card 2 - AI Tutors */}
-            <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center">
+            <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={1}>
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
@@ -438,7 +439,7 @@ export default function App() {
             </FadeIn>
 
             {/* Card 3 - Notes */}
-            <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center">
+            <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={2}>
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
@@ -460,7 +461,7 @@ export default function App() {
             </FadeIn>
 
             {/* Card 4 - Library */}
-            <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center">
+            <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center" data-index={3}>
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-500 h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-90 opacity-60'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
