@@ -205,25 +205,227 @@ const FAQItem: React.FC<{ q: string; a: string; isOpen: boolean; onToggle: () =>
   );
 };
 
+// ==========================================
+// ERROR MANAGEMENT & FALLBACK PAGES
+// ==========================================
+
+const NotFoundPage = ({ onGoHome }: { onGoHome: () => void }) => {
+  const [isRetrying, setIsRetrying] = useState(false);
+  const [retrySuccess, setRetrySuccess] = useState(false);
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    setTimeout(() => {
+      setIsRetrying(false);
+      setRetrySuccess(true);
+      setTimeout(() => {
+        setRetrySuccess(false);
+        onGoHome();
+      }, 1000);
+    }, 1500);
+  };
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 py-20 z-10 text-center animate-fade-in w-full">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#3A7BD5]/5 blur-[120px] rounded-full pointer-events-none" />
+      
+      <div className="relative mb-8">
+        <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#1E293B]/80 to-[#0F172A] border border-white/10 flex items-center justify-center mx-auto shadow-2xl relative group">
+          <div className="absolute inset-0 bg-[#3A7BD5]/20 rounded-2xl blur-lg opacity-40 group-hover:opacity-100 transition-opacity" />
+          <BrainCircuit className="w-12 h-12 text-[#60A5FA] animate-pulse" />
+          <X className="w-6 h-6 text-red-500 absolute -bottom-1 -right-1 bg-slate-950 rounded-full border border-red-500/30 p-1" />
+        </div>
+      </div>
+
+      <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6">
+        <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+        404 ERROR: NEURAL NODE OFFLINE
+      </div>
+
+      <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 tracking-tight">
+        Path Terminated
+      </h1>
+
+      <p className="text-base md:text-lg text-[#94A3B8] max-w-lg mb-12 font-light leading-relaxed">
+        The system path you requested does not exist in Kortex AI's current knowledge indexing. It may have been relocated or purged during a routine memory defragmentation.
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
+        <button
+          onClick={onGoHome}
+          className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-primary text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-[#3A7BD5]/25"
+        >
+          <span>Return to Safety</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+
+        <button
+          onClick={handleRetry}
+          disabled={isRetrying || retrySuccess}
+          className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+        >
+          {isRetrying ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Analyzing Path...</span>
+            </>
+          ) : retrySuccess ? (
+            <>
+              <Check className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-400">Path Reset!</span>
+            </>
+          ) : (
+            <span>Defragment & Reconnect</span>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const ServerErrorPage = ({ onGoHome }: { onGoHome: () => void }) => {
+  const [logs, setLogs] = useState<string[]>([]);
+  const [showLogs, setShowLogs] = useState(false);
+
+  const mockLogs = [
+    "[SYSTEM] Initiating hardware diagnostic...",
+    "[ERROR] Cognitive kernel panic: unhandled exception in neural thread #4",
+    "[WARNING] Thread conflict: Database response times exceeding 500ms",
+    "[SYSTEM] Restructuring memory registers in cluster-9A...",
+    "[SYSTEM] Rebuilding routing matrices (103/104 nodes complete)...",
+    "[SUCCESS] AI core subroutines stable. Ready for incoming vectors."
+  ];
+
+  const triggerDiagnostic = () => {
+    setShowLogs(true);
+    setLogs([]);
+    mockLogs.forEach((log, index) => {
+      setTimeout(() => {
+        setLogs(prev => [...prev, log]);
+      }, (index + 1) * 600);
+    });
+  };
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 py-16 z-10 text-center animate-fade-in w-full">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-amber-500/5 blur-[130px] rounded-full pointer-events-none" />
+      
+      <div className="relative mb-8">
+        <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#1E293B]/80 to-[#0F172A] border border-white/10 flex items-center justify-center mx-auto shadow-2xl relative group">
+          <div className="absolute inset-0 bg-amber-500/20 rounded-2xl blur-lg opacity-40 group-hover:opacity-100 transition-opacity" />
+          <Zap className="w-12 h-12 text-amber-500 animate-pulse" />
+        </div>
+      </div>
+
+      <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6">
+        <Flame className="w-4 h-4 text-amber-500 animate-bounce" />
+        500 ERROR: SYSTEM CONFLICT DETECTED
+      </div>
+
+      <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 tracking-tight">
+        Core Malfunction
+      </h1>
+
+      <p className="text-base md:text-lg text-[#94A3B8] max-w-lg mb-10 font-light leading-relaxed">
+        An unexpected synthetic conflict occurred inside our local processors. Our engineering subroutines are already patch-stabilizing the neural nodes.
+      </p>
+
+      <div className="flex flex-col gap-6 justify-center items-center w-full max-w-lg mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+          <button
+            onClick={onGoHome}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-primary text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-[#3A7BD5]/25"
+          >
+            <span>Back to Safety</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={triggerDiagnostic}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Run Neural Diagnostic</span>
+          </button>
+        </div>
+
+        {showLogs && (
+          <div className="w-full bg-[#040406]/90 border border-white/5 rounded-xl p-5 text-left font-mono text-xs text-[#94A3B8] h-48 overflow-y-auto shadow-inner">
+            <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
+              <span className="text-amber-500 uppercase font-bold tracking-widest text-[10px]">DIAGNOSTIC CORE LOGS</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+            </div>
+            <div className="space-y-1.5">
+              {logs.map((log, index) => (
+                <div key={index} className="animate-fade-in flex gap-2">
+                  <span className="text-amber-500/50 select-none">&gt;</span>
+                  <span className={log.includes('[ERROR]') ? 'text-red-400' : log.includes('[SUCCESS]') ? 'text-emerald-400' : 'text-[#a1a1aa]'}>
+                    {log}
+                  </span>
+                </div>
+              ))}
+              {logs.length < mockLogs.length && (
+                <div className="text-amber-500/70 animate-pulse">Running sequence...</div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [activeFeature, setActiveFeature] = useState(0);
+
+  // Monitor URL routing changes dynamically to support error pages
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(...args) {
+      originalPushState.apply(this, args);
+      handleLocationChange();
+    };
+    
+    const originalReplaceState = window.history.replaceState;
+    window.history.replaceState = function(...args) {
+      originalReplaceState.apply(this, args);
+      handleLocationChange();
+    };
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
+  }, []);
+
+  const navigateTo = (path: string) => {
+    window.history.pushState({}, '', path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     const cards = container.querySelectorAll('.feature-card-wrapper');
     if (!cards.length) return;
     
-    const containerRect = container.getBoundingClientRect();
-    const containerCenter = containerRect.left + containerRect.width / 2;
+    // Compute scroll content centers (completely independent of CSS scale transformations!)
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
     
     let minDist = Infinity;
-    let minIndex = 0;
+    let minIndex = activeFeature;
     
     cards.forEach((card, i) => {
-      const rect = card.getBoundingClientRect();
-      const cardCenter = rect.left + rect.width / 2;
+      const cardEl = card as HTMLElement;
+      const cardCenter = cardEl.offsetLeft + cardEl.clientWidth / 2;
       const dist = Math.abs(containerCenter - cardCenter);
+      
       if (dist < minDist) {
         minDist = dist;
         minIndex = i;
@@ -234,6 +436,9 @@ export default function App() {
       setActiveFeature(minIndex);
     }
   };
+
+  const show404 = currentPath !== '/' && currentPath !== '/500';
+  const show500 = currentPath === '/500';
 
   return (
     <div className="min-h-screen bg-[#0F172A] selection:bg-[#3A7BD5]/30 relative overflow-hidden font-sans">
@@ -254,13 +459,18 @@ export default function App() {
       <div className="glow-effect bottom-[-10%] left-[15%] opacity-40" />
 
       {/* Main Content Wrapper (brings content above background) */}
-      <div className="relative z-10">
+      {show404 ? (
+        <NotFoundPage onGoHome={() => navigateTo('/')} />
+      ) : show500 ? (
+        <ServerErrorPage onGoHome={() => navigateTo('/')} />
+      ) : (
+        <div className="relative z-10">
 
       {/* Navbar - Floating Glass Bar */}
       <nav className="fixed top-2 left-0 w-full z-50 px-4 md:px-8 flex justify-center pointer-events-none">
         <div className="w-full max-w-7xl pointer-events-auto">
           <div className="floating-nav px-6 md:px-10 py-4 flex items-center justify-between shadow-2xl">
-            <div className="flex items-center gap-2 md:gap-3 w-auto md:w-56 group cursor-pointer">
+            <div onClick={() => navigateTo('/')} className="flex items-center gap-2 md:gap-3 w-auto md:w-56 group cursor-pointer">
               <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 group-hover:border-[#3A7BD5]/50 group-hover:bg-[#3A7BD5]/10 transition-all overflow-hidden">
                 <BrainCircuit className="w-5 h-5 md:w-6 md:h-6 text-[#3A7BD5] group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -391,11 +601,11 @@ export default function App() {
             </div>
           </FadeIn>
           
-          <div onScroll={handleScroll} className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-[7.5vw] md:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
+          <div onScroll={handleScroll} className="feature-cards-container flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-[7.5vw] md:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
             
             {/* Card 1 - Practice Quizzes */}
             <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-64 h-64 bg-[#3A7BD5]/10 blur-[60px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                
@@ -420,7 +630,7 @@ export default function App() {
 
             {/* Card 2 - AI Tutors */}
             <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                
@@ -445,7 +655,7 @@ export default function App() {
 
             {/* Card 3 - Notes */}
             <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute top-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
@@ -468,7 +678,7 @@ export default function App() {
 
             {/* Card 4 - Library */}
             <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
-              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.88] opacity-30 shadow-none'}`}>
+              <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
@@ -496,10 +706,16 @@ export default function App() {
                 key={i}
                 aria-label={`Scroll to feature ${i + 1}`}
                 onClick={() => {
+                   const container = document.querySelector('.feature-cards-container');
                    const cards = document.querySelectorAll('.feature-card-wrapper');
-                   cards[i]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                   const card = cards[i] as HTMLElement;
+                   if (container && card) {
+                     const targetScroll = card.offsetLeft - (container.clientWidth - card.clientWidth) / 2;
+                     container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+                     setActiveFeature(i);
+                   }
                 }}
-                className={`h-2.5 rounded-full transition-all duration-300 ${activeFeature === i ? 'bg-[#3A7BD5] w-8' : 'w-2.5 bg-white/20 hover:bg-white/40'}`}
+                className={`h-2.5 rounded-full transition-all duration-300 ${activeFeature === i ? 'bg-[#3A7BD5] w-8 animate-pulse' : 'w-2.5 bg-white/20 hover:bg-white/40'}`}
               />
             ))}
           </div>
@@ -814,11 +1030,11 @@ export default function App() {
               </div>
               <div className="space-y-4">
                 <h5 className="font-semibold text-white mb-6 text-sm">All Pages</h5>
-                <ul className="space-y-3">
-                  <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Home</a></li>
+                <ul className="space-y-3 p-0 list-none m-0">
+                  <li><button onClick={() => navigateTo('/')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Home</button></li>
                   <li><a href="https://app.kortexai.online" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">App</a></li>
-                  <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blogs</a></li>
-                  <li><a href="#" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Blog Open</a></li>
+                  <li><button onClick={() => navigateTo('/404')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">404 Error Page</button></li>
+                  <li><button onClick={() => navigateTo('/500')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">500 Server Error</button></li>
                   <li><a href="#contact" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Contact</a></li>
                 </ul>
               </div>
@@ -856,7 +1072,8 @@ export default function App() {
           </div>
         </div>
       </footer>
-      </div> {/* End Main Content Wrapper */}
+        </div>
+      )}
     </div>
   );
 }
