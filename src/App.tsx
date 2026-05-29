@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Flame, BookOpen, PenTool, TrendingUp, 
   ChevronRight, ArrowRight, Play, Target, Library, Sparkles, Building2, BrainCircuit,
-  MessageSquare, FileText, Check, Plus, Minus, Mic, Upload, Shield, Zap, Globe, Lock, PlayCircle, Users, X, Star
+  MessageSquare, FileText, Check, Plus, Minus, Mic, Upload, Shield, Zap, Globe, Lock, PlayCircle, Users, X, Star, Instagram
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
@@ -12,70 +12,70 @@ const testimonials = [
     role: "Computer Science",
     text: "Kortex AI changed how I study for exams. The AI tutor breaks down algorithms into simple bits. It's like having a senior developer next to me.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Amina Yusuf",
     role: "Medical Student",
     text: "The practice quizzes are phenomenal. They don't just tell me what I got wrong, but explain why. My retention has improved drastically.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Olamide Babatunde",
     role: "Engineering Major",
     text: "As a user of other tools, I can confidently say Kortex AI is on another level. The personalized curriculum hub keeps me on track.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1546456073-ea246a7bd25f?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Ngozi Eze",
     role: "Law Student",
     text: "The notes feature and the cognitive vault are lifesavers. I can easily organize case studies and have the AI quiz me on precedents.",
     rating: 4,
-    avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Emeka Uba",
     role: "Economics Student",
     text: "I was struggling with macroeconomics until I started using the AI tutors. It patiently guided me through the concepts without judging.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Zainab Abubakar",
     role: "Pharmacy Student",
     text: "The library gave me access to all the materials I needed. The interface is clean, dark mode is easy on the eyes during late-night studies.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1531123414708-eb7fb052aece?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Tolu Ojo",
     role: "Architecture",
     text: "Joining the platform was the best decision for my practicals. The way it structures knowledge is just brilliant. Highly recommended.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1506803682983-e4c18a6efb47?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Blessing Adebayo",
     role: "Business Admin",
     text: "Kortex is the best study companion I've ever used. The interactive discussions make learning so much more engaging than reading text.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "David Nwachukwu",
     role: "Physics Student",
     text: "The explanations provided by the AI are incredibly detailed. It helped me master quantum mechanics concepts I previously found impossible.",
     rating: 4,
-    avatar: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&h=150&q=80"
   },
   {
     name: "Fatima Bello",
     role: "Nursing Student",
     text: "I love how it organizes my academic roadmap. I know exactly what I need to study and when. The practice quizzes are perfect.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1589156229687-498cbc23d7da?auto=format&fit=crop&w=150&h=150&q=80"
+    avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=150&h=150&q=80"
   }
 ];
 
@@ -192,15 +192,25 @@ const FAQItem: React.FC<{ q: string; a: string; isOpen: boolean; onToggle: () =>
     >
       <div className="flex justify-between items-center gap-4">
         <h4 className="text-white font-medium text-[1.05rem] leading-snug">{q}</h4>
-        <div className="shrink-0 text-white/50">
-          {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+        <div className="shrink-0 text-white/50 font-medium">
+          {isOpen ? <Minus className="w-5 h-5 transition-transform" /> : <Plus className="w-5 h-5 transition-transform" />}
         </div>
       </div>
-      {isOpen && (
-        <div className="mt-4 text-[#94A3B8] text-sm leading-relaxed pr-6 animate-fade-in">
-          {a}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="mt-4 text-[#94A3B8] text-sm leading-relaxed pr-6">
+              {a}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -210,165 +220,154 @@ const FAQItem: React.FC<{ q: string; a: string; isOpen: boolean; onToggle: () =>
 // ==========================================
 
 const NotFoundPage = ({ onGoHome }: { onGoHome: () => void }) => {
-  const [isRetrying, setIsRetrying] = useState(false);
-  const [retrySuccess, setRetrySuccess] = useState(false);
-
-  const handleRetry = () => {
-    setIsRetrying(true);
-    setTimeout(() => {
-      setIsRetrying(false);
-      setRetrySuccess(true);
-      setTimeout(() => {
-        setRetrySuccess(false);
-        onGoHome();
-      }, 1000);
-    }, 1500);
-  };
-
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 py-20 z-10 text-center animate-fade-in w-full">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#3A7BD5]/5 blur-[120px] rounded-full pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0d3f44] via-[#091a24] to-[#03080c] flex flex-col items-center justify-center p-4 animate-fade-in select-none overflow-hidden">
+      {/* Background Star Overlay */}
+      <div className="absolute inset-0 bg-stars opacity-30 animate-twinkle pointer-events-none" />
+      <div className="absolute inset-0 bg-stars-2 opacity-20 animate-twinkle-delayed pointer-events-none" />
       
-      <div className="relative mb-8">
-        <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#1E293B]/80 to-[#0F172A] border border-white/10 flex items-center justify-center mx-auto shadow-2xl relative group">
-          <div className="absolute inset-0 bg-[#3A7BD5]/20 rounded-2xl blur-lg opacity-40 group-hover:opacity-100 transition-opacity" />
-          <BrainCircuit className="w-12 h-12 text-[#60A5FA] animate-pulse" />
-          <X className="w-6 h-6 text-red-500 absolute -bottom-1 -right-1 bg-slate-950 rounded-full border border-red-500/30 p-1" />
+      {/* Background glowing particles for atmosphere */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-teal-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-blue-500/5 blur-[120px] pointer-events-none" />
+
+      {/* Floating Space Mockup Phone/Card */}
+      <div className="relative w-full max-w-[340px] md:max-w-[360px] h-[640px] rounded-[3rem] p-6 flex flex-col items-center justify-between border border-white/10 overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.9)] bg-[#040a0f]/90 backdrop-blur-md select-none transform hover:scale-[1.01] transition-transform duration-500">
+        
+        {/* Subtle Inner Star field within card */}
+        <div className="absolute inset-0 bg-stars opacity-40 animate-twinkle pointer-events-none" />
+        <div className="absolute inset-0 bg-stars-2 opacity-30 animate-twinkle-delayed pointer-events-none" />
+
+        {/* High-Fidelity Top Phone Status Bar */}
+        <div className="w-full flex items-center justify-between px-6 py-2 select-none relative z-10 text-[10px] font-medium text-white/30 tracking-tight font-mono">
+          <span>12:48</span>
+          {/* Dynamic Notch / Island */}
+          <div className="w-20 h-4 bg-black/80 rounded-b-xl border-x border-b border-white/5 absolute top-0 left-1/2 -translate-x-1/2" />
+          <div className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 20h.01M8 16h.01M16 16h.01M5 11h.01M19 11h.01M2 6h.01M22 6h.01" />
+            </svg>
+            <span>84%</span>
+          </div>
         </div>
+
+        {/* Main Content Area */}
+        <div className="flex flex-col items-center justify-center flex-1 w-full relative z-10 mt-12">
+          {/* Huge centered 404 text */}
+          <h1 className="text-[110px] font-black tracking-tight text-white/95 text-center leading-none filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] select-text">
+            404
+          </h1>
+
+          {/* Curved Crescent Swoosh pill badge */}
+          <div className="relative mt-6 mb-2 flex flex-col items-center">
+            {/* The elegant text Pill */}
+            <div className="px-5 py-1.5 rounded-xl bg-teal-950/40 border border-teal-500/20 text-[11px] font-extrabold text-[#4ade80] tracking-widest uppercase relative overflow-hidden shadow-inner">
+              Lost in Space
+            </div>
+            {/* Crescent curved underline SVG matching reference screenshot */}
+            <svg className="w-28 h-3.5 text-teal-400 opacity-90 mt-1.5 filter drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]" viewBox="0 0 100 15" fill="none">
+              <path d="M5 2 Q50 12 95 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </div>
+
+          {/* Subtitle description */}
+          <p className="text-xs font-light text-slate-300 max-w-[200px] text-center mt-4 leading-relaxed tracking-wide select-text">
+            Oops! Looks like you are headed the wrong way!
+          </p>
+        </div>
+
+        {/* Action Button at bottom */}
+        <div className="w-full flex justify-center pb-6 relative z-10">
+          <button
+            onClick={onGoHome}
+            className="w-full max-w-[190px] py-3.5 rounded-full bg-gradient-to-r from-[#174F56] to-[#0D363B] text-[11px] font-extrabold text-white tracking-[0.2em] transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer shadow-[0_12px_25px_rgba(23,79,86,0.5)] border border-teal-400/40 hover:border-teal-300 drop-shadow-[0_0_15px_rgba(45,212,191,0.3)] select-none uppercase hover:shadow-[0_15px_30px_rgba(23,79,86,0.7)]"
+          >
+            Go Home
+          </button>
+        </div>
+
       </div>
 
-      <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6">
-        <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-        404 ERROR: NEURAL NODE OFFLINE
-      </div>
-
-      <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 tracking-tight">
-        Path Terminated
-      </h1>
-
-      <p className="text-base md:text-lg text-[#94A3B8] max-w-lg mb-12 font-light leading-relaxed">
-        The system path you requested does not exist in Kortex AI's current knowledge indexing. It may have been relocated or purged during a routine memory defragmentation.
-      </p>
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
-        <button
-          onClick={onGoHome}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-primary text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-[#3A7BD5]/25"
-        >
-          <span>Return to Safety</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
-
-        <button
-          onClick={handleRetry}
-          disabled={isRetrying || retrySuccess}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-        >
-          {isRetrying ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Analyzing Path...</span>
-            </>
-          ) : retrySuccess ? (
-            <>
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-400">Path Reset!</span>
-            </>
-          ) : (
-            <span>Defragment & Reconnect</span>
-          )}
-        </button>
+      {/* Styled watermark layout exactly matching BANGKANDAR | 2019 reference styling */}
+      <div className="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-2.5 text-[10px] font-extrabold text-white/30 tracking-[0.3em] uppercase pointer-events-none md:bottom-12 select-none">
+        <Instagram className="w-4 h-4 text-white/30" strokeWidth={2.5} />
+        <span>Kortex AI | 2026</span>
       </div>
     </div>
   );
 };
 
 const ServerErrorPage = ({ onGoHome }: { onGoHome: () => void }) => {
-  const [logs, setLogs] = useState<string[]>([]);
-  const [showLogs, setShowLogs] = useState(false);
-
-  const mockLogs = [
-    "[SYSTEM] Initiating hardware diagnostic...",
-    "[ERROR] Cognitive kernel panic: unhandled exception in neural thread #4",
-    "[WARNING] Thread conflict: Database response times exceeding 500ms",
-    "[SYSTEM] Restructuring memory registers in cluster-9A...",
-    "[SYSTEM] Rebuilding routing matrices (103/104 nodes complete)...",
-    "[SUCCESS] AI core subroutines stable. Ready for incoming vectors."
-  ];
-
-  const triggerDiagnostic = () => {
-    setShowLogs(true);
-    setLogs([]);
-    mockLogs.forEach((log, index) => {
-      setTimeout(() => {
-        setLogs(prev => [...prev, log]);
-      }, (index + 1) * 600);
-    });
-  };
-
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 py-16 z-10 text-center animate-fade-in w-full">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-amber-500/5 blur-[130px] rounded-full pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0d3f44] via-[#091a24] to-[#03080c] flex flex-col items-center justify-center p-4 animate-fade-in select-none overflow-hidden">
+      {/* Background Star Overlay */}
+      <div className="absolute inset-0 bg-stars opacity-30 animate-twinkle pointer-events-none" />
+      <div className="absolute inset-0 bg-stars-2 opacity-20 animate-twinkle-delayed pointer-events-none" />
       
-      <div className="relative mb-8">
-        <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#1E293B]/80 to-[#0F172A] border border-white/10 flex items-center justify-center mx-auto shadow-2xl relative group">
-          <div className="absolute inset-0 bg-amber-500/20 rounded-2xl blur-lg opacity-40 group-hover:opacity-100 transition-opacity" />
-          <Zap className="w-12 h-12 text-amber-500 animate-pulse" />
+      {/* Background glowing particles for atmosphere */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-amber-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-teal-500/5 blur-[120px] pointer-events-none" />
+
+      {/* Floating Space Mockup Phone/Card */}
+      <div className="relative w-full max-w-[340px] md:max-w-[360px] h-[640px] rounded-[3rem] p-6 flex flex-col items-center justify-between border border-white/10 overflow-hidden shadow-[0_50px_120px_-20px_rgba(0,0,0,0.9)] bg-[#040a0f]/90 backdrop-blur-md select-none transform hover:scale-[1.01] transition-transform duration-500">
+        
+        {/* Subtle Inner Star field within card */}
+        <div className="absolute inset-0 bg-stars opacity-40 animate-twinkle pointer-events-none" />
+        <div className="absolute inset-0 bg-stars-2 opacity-30 animate-twinkle-delayed pointer-events-none" />
+
+        {/* High-Fidelity Top Phone Status Bar */}
+        <div className="w-full flex items-center justify-between px-6 py-2 select-none relative z-10 text-[10px] font-medium text-white/30 tracking-tight font-mono">
+          <span>03:14</span>
+          {/* Dynamic Notch / Island */}
+          <div className="w-20 h-4 bg-black/80 rounded-b-xl border-x border-b border-white/5 absolute top-0 left-1/2 -translate-x-1/2" />
+          <div className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 20h.01M8 16h.01M16 16h.01M5 11h.01M19 11h.01M2 6h.01M22 6h.01" />
+            </svg>
+            <span>ERROR</span>
+          </div>
         </div>
-      </div>
 
-      <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6">
-        <Flame className="w-4 h-4 text-amber-500 animate-bounce" />
-        500 ERROR: SYSTEM CONFLICT DETECTED
-      </div>
+        {/* Main Content Area */}
+        <div className="flex flex-col items-center justify-center flex-1 w-full relative z-10 mt-12">
+          {/* Huge centered 500 text */}
+          <h1 className="text-[110px] font-black tracking-tight text-white/95 text-center leading-none filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] select-text">
+            500
+          </h1>
 
-      <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 tracking-tight">
-        Core Malfunction
-      </h1>
+          {/* Curved Crescent Swoosh pill badge */}
+          <div className="relative mt-6 mb-2 flex flex-col items-center">
+            {/* The elegant text Pill (utilizing high-contrast amber/yellow for server failure warnings) */}
+            <div className="px-5 py-1.5 rounded-xl bg-amber-950/40 border border-amber-500/20 text-[11px] font-extrabold text-[#f59e0b] tracking-widest uppercase relative overflow-hidden shadow-inner">
+              Core Offline
+            </div>
+            {/* Crescent curved underline SVG matching reference screenshot */}
+            <svg className="w-28 h-3.5 text-amber-500 opacity-90 mt-1.5 filter drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" viewBox="0 0 100 15" fill="none">
+              <path d="M5 2 Q50 12 95 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </div>
 
-      <p className="text-base md:text-lg text-[#94A3B8] max-w-lg mb-10 font-light leading-relaxed">
-        An unexpected synthetic conflict occurred inside our local processors. Our engineering subroutines are already patch-stabilizing the neural nodes.
-      </p>
+          {/* Subtitle description */}
+          <p className="text-xs font-light text-slate-300 max-w-[200px] text-center mt-4 leading-relaxed tracking-wide select-text">
+            Oops! Looks like the neural core dropped a connection!
+          </p>
+        </div>
 
-      <div className="flex flex-col gap-6 justify-center items-center w-full max-w-lg mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+        {/* Action Button at bottom */}
+        <div className="w-full flex justify-center pb-6 relative z-10">
           <button
             onClick={onGoHome}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-primary text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-[#3A7BD5]/25"
+            className="w-full max-w-[190px] py-3.5 rounded-full bg-gradient-to-r from-[#564217] to-[#3b2b0d] text-[11px] font-extrabold text-white tracking-[0.2em] transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer shadow-[0_12px_25px_rgba(86,66,23,0.5)] border border-amber-400/40 hover:border-amber-300 drop-shadow-[0_0_15px_rgba(245,158,11,0.3)] select-none uppercase hover:shadow-[0_15px_30px_rgba(86,66,23,0.7)]"
           >
-            <span>Back to Safety</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={triggerDiagnostic}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all hover:scale-102 flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <span>Run Neural Diagnostic</span>
+            Go Home
           </button>
         </div>
 
-        {showLogs && (
-          <div className="w-full bg-[#040406]/90 border border-white/5 rounded-xl p-5 text-left font-mono text-xs text-[#94A3B8] h-48 overflow-y-auto shadow-inner">
-            <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
-              <span className="text-amber-500 uppercase font-bold tracking-widest text-[10px]">DIAGNOSTIC CORE LOGS</span>
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
-            </div>
-            <div className="space-y-1.5">
-              {logs.map((log, index) => (
-                <div key={index} className="animate-fade-in flex gap-2">
-                  <span className="text-amber-500/50 select-none">&gt;</span>
-                  <span className={log.includes('[ERROR]') ? 'text-red-400' : log.includes('[SUCCESS]') ? 'text-emerald-400' : 'text-[#a1a1aa]'}>
-                    {log}
-                  </span>
-                </div>
-              ))}
-              {logs.length < mockLogs.length && (
-                <div className="text-amber-500/70 animate-pulse">Running sequence...</div>
-              )}
-            </div>
-          </div>
-        )}
+      </div>
+
+      {/* Styled watermark layout exactly matching BANGKANDAR | 2019 reference styling */}
+      <div className="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-2.5 text-[10px] font-extrabold text-white/30 tracking-[0.3em] uppercase pointer-events-none md:bottom-12 select-none">
+        <Instagram className="w-4 h-4 text-white/30" strokeWidth={2.5} />
+        <span>Kortex AI | 2026</span>
       </div>
     </div>
   );
@@ -378,6 +377,39 @@ export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactStatus, setContactStatus] = useState<'idle' | 'sending' | 'success' | 'invalid'>('idle');
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
+      setContactStatus('invalid');
+      setTimeout(() => setContactStatus('idle'), 3000);
+      return;
+    }
+    setContactStatus('sending');
+    setTimeout(() => {
+      setContactStatus('success');
+      setContactName('');
+      setContactEmail('');
+      setContactMessage('');
+      setTimeout(() => {
+        setContactStatus('idle');
+      }, 4000);
+    }, 1500);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      window.location.href = `https://app.kortexai.online?q=${encodeURIComponent(searchQuery.trim())}`;
+    } else {
+      window.location.href = 'https://app.kortexai.online';
+    }
+  };
 
   // Monitor URL routing changes dynamically to support error pages
   useEffect(() => {
@@ -467,7 +499,7 @@ export default function App() {
         <div className="relative z-10">
 
       {/* Navbar - Floating Glass Bar */}
-      <nav className="fixed top-2 left-0 w-full z-50 px-4 md:px-8 flex justify-center pointer-events-none">
+      <nav className="fixed top-2 left-0 w-full z-50 px-4 md:px-8 flex flex-col items-center pointer-events-none">
         <div className="w-full max-w-7xl pointer-events-auto">
           <div className="floating-nav px-6 md:px-10 py-4 flex items-center justify-between shadow-2xl">
             <div onClick={() => navigateTo('/')} className="flex items-center gap-2 md:gap-3 w-auto md:w-56 group cursor-pointer">
@@ -496,14 +528,73 @@ export default function App() {
 
             {/* Mobile Hamburger Menu */}
             <div className="flex md:hidden items-center justify-end">
-              <button className="text-white hover:text-white/70 transition-all p-1" aria-label="Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 8h14M8 16h11" />
-                </svg>
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-white hover:text-white/70 transition-all p-1.5 focus:outline-none cursor-pointer" 
+                aria-label="Menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6 animate-fade-in" />
+                ) : (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 8h14M8 16h11" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu with motion */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -15, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -15, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="w-full max-w-7xl mt-2 px-4 pointer-events-auto md:hidden"
+            >
+              <div className="bg-[#0b0f19]/95 border border-white/10 backdrop-blur-2xl rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
+                <a 
+                  href="#product" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
+                >
+                  Product
+                </a>
+                <a 
+                  href="#docs" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-[#3A7BD5]/10"
+                >
+                  Docs
+                </a>
+                <a 
+                  href="#resources" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
+                >
+                  Resources
+                </a>
+                <a 
+                  href="#contact" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
+                >
+                  Contact
+                </a>
+                <a 
+                  href="https://app.kortexai.online"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white text-center py-3 rounded-full text-xs font-bold uppercase tracking-widest mt-2 transition-all cursor-pointer"
+                >
+                  Launch App
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
@@ -550,6 +641,14 @@ export default function App() {
                 <div className="p-4 flex gap-3 text-[#94A3B8]">
                   <BrainCircuit className="w-5 h-5 mt-1 opacity-70" />
                   <textarea 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSearchSubmit();
+                      }
+                    }}
                     className="w-full bg-transparent border-none outline-none resize-none text-base text-white placeholder-white/40 h-28" 
                     placeholder="Enter your course topic, or paste concepts to start learning..."
                   />
@@ -558,7 +657,10 @@ export default function App() {
                   <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white/50 hover:bg-white/10 transition-colors cursor-pointer">
                     <Library className="w-5 h-5" />
                   </div>
-                  <button className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer shadow-[0_0_15px_rgba(58,123,213,0.4)]" onClick={() => window.location.href='https://app.kortexai.online'}>
+                  <button 
+                    onClick={handleSearchSubmit}
+                    className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer shadow-[0_0_15px_rgba(58,123,213,0.4)]"
+                  >
                     Start
                   </button>
                 </div>
@@ -802,7 +904,7 @@ export default function App() {
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-24 relative z-10 w-full overflow-hidden">
-        <div className="absolute inset-0 bg-[#050505] -z-10" />
+        <div className="absolute inset-0 bg-transparent -z-10" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-[#3A7BD5]/5 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-6 mb-16 relative">
@@ -822,18 +924,26 @@ export default function App() {
           {/* Row 1 - Now moving Right (Reverse) */}
           <div className="animate-marquee-reverse flex gap-6 shrink-0 w-max">
             {[...testimonials.slice(0, 5), ...testimonials.slice(0, 5), ...testimonials.slice(0, 5), ...testimonials.slice(0, 5)].map((t, i) => (
-              <div key={`row1-${i}`} className="bg-[#0f121b] border border-white/5 rounded-[1.5rem] p-8 w-[400px] shrink-0 shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#3A7BD5]/30 hover:-translate-y-1 transition-all duration-300">
+              <div key={`row1-${i}`} className="glass-card hover:bg-white/10 rounded-[1.5rem] p-8 w-[400px] shrink-0 shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#3A7BD5]/40 hover:-translate-y-1 transition-all duration-300">
                 <div className="flex text-[#3A7BD5] mb-5 gap-1">
                   {[...Array(5)].map((_, j) => (
                     <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'fill-current' : 'text-white/20'}`} />
                   ))}
                 </div>
-                <p className="text-[#a1a1aa] text-sm leading-relaxed mb-8 font-light">"{t.text}"</p>
+                <p className="text-slate-200 text-sm leading-relaxed mb-8 font-light">"{t.text}"</p>
                 <div className="flex items-center gap-4 mt-auto">
-                  <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover grayscale-[0.2]" />
+                  <img 
+                    src={t.avatar} 
+                    alt={t.name} 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(t.name)}`;
+                    }}
+                    className="w-12 h-12 rounded-full object-cover ring-2 ring-[#3A7BD5]/30 p-0.5 bg-slate-900/50" 
+                  />
                   <div>
                     <h4 className="text-white text-sm font-medium">{t.name}</h4>
-                    <p className="text-[#60A5FA]/80 text-xs mt-0.5">{t.role}</p>
+                    <p className="text-[#60A5FA] text-xs mt-0.5 font-medium">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -843,18 +953,26 @@ export default function App() {
           {/* Row 2 - Now moving Left */}
           <div className="animate-marquee flex gap-6 shrink-0 w-max">
             {[...testimonials.slice(5, 10), ...testimonials.slice(5, 10), ...testimonials.slice(5, 10), ...testimonials.slice(5, 10)].map((t, i) => (
-               <div key={`row2-${i}`} className="bg-[#0f121b] border border-white/5 rounded-[1.5rem] p-8 w-[400px] shrink-0 shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-[#3A7BD5]/30 hover:-translate-y-1 transition-all duration-300">
+               <div key={`row2-${i}`} className="glass-card hover:bg-white/10 rounded-[1.5rem] p-8 w-[400px] shrink-0 shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:border-[#3A7BD5]/40 hover:-translate-y-1 transition-all duration-300">
                <div className="flex text-[#3A7BD5] mb-5 gap-1">
                  {[...Array(5)].map((_, j) => (
                    <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'fill-current' : 'text-white/20'}`} />
                  ))}
                </div>
-               <p className="text-[#a1a1aa] text-sm leading-relaxed mb-8 font-light">"{t.text}"</p>
+               <p className="text-slate-200 text-sm leading-relaxed mb-8 font-light">"{t.text}"</p>
                <div className="flex items-center gap-4 mt-auto">
-                 <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover grayscale-[0.2]" />
+                 <img 
+                   src={t.avatar} 
+                   alt={t.name} 
+                   referrerPolicy="no-referrer"
+                   onError={(e) => {
+                     e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(t.name)}`;
+                   }}
+                   className="w-12 h-12 rounded-full object-cover ring-2 ring-[#3A7BD5]/30 p-0.5 bg-slate-900/50" 
+                 />
                  <div>
                    <h4 className="text-white text-sm font-medium">{t.name}</h4>
-                   <p className="text-[#60A5FA]/80 text-xs mt-0.5">{t.role}</p>
+                   <p className="text-[#60A5FA] text-xs mt-0.5 font-medium">{t.role}</p>
                  </div>
                </div>
              </div>
@@ -926,21 +1044,60 @@ export default function App() {
                  <h2 className="text-3xl md:text-5xl font-serif mb-6 text-white text-shadow-sm">Get in Touch With Us</h2>
                  <p className="text-[#a1a1aa] mb-12 max-w-md text-lg font-light">Whether you're exploring student features, organizing a group study, or need school rep partnership, our team is here to help.</p>
                  
-                 <form className="space-y-6">
+                 <form onSubmit={handleContactSubmit} className="space-y-6">
                     <div>
                       <label className="block text-sm text-[#a1a1aa] mb-2 font-medium">Name</label>
-                      <input type="text" className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors" placeholder="Enter your name" />
+                      <input 
+                        type="text" 
+                        value={contactName}
+                        onChange={(e) => setContactName(e.target.value)}
+                        className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors" 
+                        placeholder="Enter your name" 
+                        disabled={contactStatus === 'sending'}
+                      />
                     </div>
                     <div>
                       <label className="block text-sm text-[#a1a1aa] mb-2 font-medium">Email Address</label>
-                      <input type="email" className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors" placeholder="Enter your email" />
+                      <input 
+                        type="email" 
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                        className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors" 
+                        placeholder="Enter your email" 
+                        disabled={contactStatus === 'sending'}
+                      />
                     </div>
                     <div>
                       <label className="block text-sm text-[#a1a1aa] mb-2 font-medium">Message</label>
-                      <textarea className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors min-h-[120px] resize-none" placeholder="Write your message" />
+                      <textarea 
+                        value={contactMessage}
+                        onChange={(e) => setContactMessage(e.target.value)}
+                        className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 placeholder-white/30 text-white focus:outline-none focus:border-[#3A7BD5]/50 transition-colors min-h-[120px] resize-none" 
+                        placeholder="Write your message" 
+                        disabled={contactStatus === 'sending'}
+                      />
                     </div>
-                    <button type="button" className="bg-[#3A7BD5] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#3168B5] transition-colors w-auto shadow-[0_0_15px_rgba(58,123,213,0.3)]">
-                      Send Message
+                    {contactStatus === 'invalid' && (
+                      <p className="text-red-400 text-sm font-semibold animate-pulse">Please fill out all fields before submitting.</p>
+                    )}
+                    {contactStatus === 'success' && (
+                      <p className="text-green-400 text-sm font-semibold flex items-center gap-2"><Check className="w-5 h-5 text-green-400 animate-bounce" /> Thank you! Your message has been sent successfully.</p>
+                    )}
+                    <button 
+                      type="submit" 
+                      disabled={contactStatus === 'sending'}
+                      className="bg-[#3A7BD5] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#3168B5] transition-colors w-auto shadow-[0_0_15px_rgba(58,123,213,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+                    >
+                      {contactStatus === 'sending' ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Sending...
+                        </>
+                      ) : contactStatus === 'success' ? (
+                        'Message Sent!'
+                      ) : (
+                        'Send Message'
+                      )}
                     </button>
                  </form>
                </FadeIn>
@@ -1033,8 +1190,6 @@ export default function App() {
                 <ul className="space-y-3 p-0 list-none m-0">
                   <li><button onClick={() => navigateTo('/')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Home</button></li>
                   <li><a href="https://app.kortexai.online" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">App</a></li>
-                  <li><button onClick={() => navigateTo('/404')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">404 Error Page</button></li>
-                  <li><button onClick={() => navigateTo('/500')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">500 Server Error</button></li>
                   <li><a href="#contact" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Contact</a></li>
                 </ul>
               </div>
