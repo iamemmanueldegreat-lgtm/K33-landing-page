@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from 'motion/react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Flame, BookOpen, PenTool, TrendingUp, 
   ChevronRight, ArrowRight, Play, Target, Library, Sparkles, Building2, BrainCircuit,
   MessageSquare, FileText, Check, Plus, Minus, Mic, Upload, Shield, Zap, Globe, Lock, PlayCircle, Users, X, Star, Instagram
 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const testimonials = [
   {
@@ -196,21 +197,15 @@ const FAQItem: React.FC<{ q: string; a: string; isOpen: boolean; onToggle: () =>
           {isOpen ? <Minus className="w-5 h-5 transition-transform" /> : <Plus className="w-5 h-5 transition-transform" />}
         </div>
       </div>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div className="mt-4 text-[#94A3B8] text-sm leading-relaxed pr-6">
-              {a}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div 
+        className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-2 text-[#94A3B8] text-sm leading-relaxed pr-6">
+            {a}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -374,7 +369,10 @@ const ServerErrorPage = ({ onGoHome }: { onGoHome: () => void }) => {
 };
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
+  
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const [activeFeature, setActiveFeature] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -411,76 +409,78 @@ export default function App() {
     }
   };
 
-  // Monitor URL routing changes dynamically to support error pages
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    window.addEventListener('popstate', handleLocationChange);
-    
-    const originalPushState = window.history.pushState;
-    window.history.pushState = function(...args) {
-      originalPushState.apply(this, args);
-      handleLocationChange();
-    };
-    
-    const originalReplaceState = window.history.replaceState;
-    window.history.replaceState = function(...args) {
-      originalReplaceState.apply(this, args);
-      handleLocationChange();
-    };
-
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.history.pushState = originalPushState;
-      window.history.replaceState = originalReplaceState;
-    };
-  }, []);
-
   const navigateTo = (path: string) => {
-    window.history.pushState({}, '', path);
+    navigate(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const cards = container.querySelectorAll('.feature-card-wrapper');
-    if (!cards.length) return;
-    
-    // Compute scroll content centers (completely independent of CSS scale transformations!)
-    const containerCenter = container.scrollLeft + container.clientWidth / 2;
-    
-    let minDist = Infinity;
-    let minIndex = activeFeature;
-    
-    cards.forEach((card, i) => {
-      const cardEl = card as HTMLElement;
-      const cardCenter = cardEl.offsetLeft + cardEl.clientWidth / 2;
-      const dist = Math.abs(containerCenter - cardCenter);
-      
-      if (dist < minDist) {
-        minDist = dist;
-        minIndex = i;
-      }
-    });
+  const scrollTimeoutRef = useRef<number | null>(null);
 
-    if (activeFeature !== minIndex) {
-      setActiveFeature(minIndex);
-    }
+  // Pre-calculate card positions on mount/resize to avoid layout thrashing during scroll
+  const cardPositionsRef = useRef<number[]>([]);
+  
+  useEffect(() => {
+    const updatePositions = () => {
+      const container = document.querySelector('.feature-cards-container');
+      const cards = document.querySelectorAll('.feature-card-wrapper');
+      if (!container || !cards.length) return;
+      
+      const positions: number[] = [];
+      cards.forEach((card) => {
+        const el = card as HTMLElement;
+        positions.push(el.offsetLeft + el.clientWidth / 2);
+      });
+      cardPositionsRef.current = positions;
+    };
+    
+    updatePositions();
+    window.addEventListener('resize', updatePositions);
+    return () => window.removeEventListener('resize', updatePositions);
+  }, []);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (scrollTimeoutRef.current !== null) return;
+    
+    const container = e.currentTarget;
+    const scrollLeft = container.scrollLeft;
+    const clientWidth = container.clientWidth;
+    
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      scrollTimeoutRef.current = null;
+      
+      if (!cardPositionsRef.current.length) return;
+      
+      const containerCenter = scrollLeft + clientWidth / 2;
+      
+      let minDist = Infinity;
+      let minIndex = activeFeature;
+      
+      cardPositionsRef.current.forEach((cardCenter, i) => {
+        const dist = Math.abs(containerCenter - cardCenter);
+        if (dist < minDist) {
+          minDist = dist;
+          minIndex = i;
+        }
+      });
+
+      if (activeFeature !== minIndex) {
+        setActiveFeature(minIndex);
+      }
+    }, 50);
   };
 
-  const show404 = currentPath !== '/' && currentPath !== '/500';
+  const show404 = currentPath !== '/' && currentPath !== '/500' && currentPath !== '/reps';
   const show500 = currentPath === '/500';
 
   return (
-    <div className="min-h-screen bg-[#0F172A] selection:bg-[#3A7BD5]/30 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#0F172A] selection:bg-[#3A7BD5]/30 relative overflow-x-hidden font-sans">
       {/* Dynamic Background Elements */}
       {/* Subtle Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
       
       {/* Animated Stars Layers */}
-      <div className="absolute inset-0 bg-stars opacity-60 animate-twinkle pointer-events-none z-0" />
-      <div className="absolute inset-0 bg-stars-2 opacity-50 animate-twinkle-delayed pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-stars opacity-60 animate-twinkle pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-stars-2 opacity-50 animate-twinkle-delayed pointer-events-none z-0" />
       
       {/* Light Arch matching reference */}
       <div className="light-arch" />
@@ -488,7 +488,7 @@ export default function App() {
       {/* Strategic Ambient Glows */}
       <div className="glow-effect top-[5%] left-[-10%]" />
       <div className="glow-effect top-[35%] right-[-15%] opacity-50" />
-      <div className="glow-effect bottom-[-10%] left-[15%] opacity-40" />
+      <div className="glow-effect top-[80%] left-[15%] opacity-40" />
 
       {/* Main Content Wrapper (brings content above background) */}
       {show404 ? (
@@ -499,8 +499,8 @@ export default function App() {
         <div className="relative z-10">
 
       {/* Navbar - Floating Glass Bar */}
-      <nav className="fixed top-2 left-0 w-full z-50 px-4 md:px-8 flex flex-col items-center pointer-events-none">
-        <div className="w-full max-w-7xl pointer-events-auto">
+      <nav className="fixed top-6 left-0 w-full z-50 px-2 lg:px-4 flex flex-col items-center pointer-events-none">
+        <div className="w-full max-w-[1920px] pointer-events-auto">
           <div className="floating-nav px-6 md:px-10 py-4 flex items-center justify-between shadow-2xl">
             <div onClick={() => navigateTo('/')} className="flex items-center gap-2 md:gap-3 w-auto md:w-56 group cursor-pointer">
               <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 group-hover:border-[#3A7BD5]/50 group-hover:bg-[#3A7BD5]/10 transition-all overflow-hidden">
@@ -515,6 +515,7 @@ export default function App() {
               <a href="#docs" className="nav-link">Docs</a>
               <a href="#resources" className="nav-link">Resources</a>
               <a href="#contact" className="nav-link">Contact</a>
+              <Link to="/reps" className="nav-link whitespace-nowrap">Reps</Link>
             </div>
             
             <div className="hidden md:flex justify-end w-48">
@@ -548,51 +549,87 @@ export default function App() {
         {/* Mobile Dropdown Menu with motion */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -15, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -15, scale: 0.95 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="w-full max-w-7xl mt-2 px-4 pointer-events-auto md:hidden"
-            >
-              <div className="bg-[#0b0f19]/95 border border-white/10 backdrop-blur-2xl rounded-2xl p-6 shadow-2xl flex flex-col gap-4">
-                <a 
-                  href="#product" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
-                >
-                  Product
-                </a>
-                <a 
-                  href="#docs" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-[#3A7BD5]/10"
-                >
-                  Docs
-                </a>
-                <a 
-                  href="#resources" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
-                >
-                  Resources
-                </a>
-                <a 
-                  href="#contact" 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white/80 hover:text-white py-2 text-sm font-semibold tracking-wider uppercase border-b border-white/5"
-                >
-                  Contact
-                </a>
-                <a 
-                  href="https://app.kortexai.online"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white text-center py-3 rounded-full text-xs font-bold uppercase tracking-widest mt-2 transition-all cursor-pointer"
-                >
-                  Launch App
-                </a>
-              </div>
-            </motion.div>
+            <>
+              {/* Settings / Menu Overlay */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 bg-[#050505]/70 backdrop-blur-md z-[90] md:hidden pointer-events-auto"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              
+              {/* Bottom Sheet Menu */}
+              <motion.div 
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={{ top: 0, bottom: 0.5 }}
+                onDragEnd={(e, info) => {
+                  if (info.offset.y > 100 || info.velocity.y > 500) {
+                    setIsMobileMenuOpen(false);
+                  }
+                }}
+                className="fixed bottom-0 left-0 right-0 z-[100] md:hidden pointer-events-auto"
+              >
+                <div className="bg-[#0b0f19] border-t border-white/10 rounded-t-[2.5rem] p-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex flex-col gap-2 w-full relative">
+                  
+                  {/* Drag Handle aesthetic */}
+                  <div className="w-16 h-1.5 bg-white/20 rounded-full mx-auto mb-6 mt-1" />
+                  
+                  <div className="flex flex-col px-2">
+                    <a 
+                      href="#product" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-white hover:text-[#3A7BD5] py-4 text-left text-lg font-medium transition-colors border-b border-white/5"
+                    >
+                      Product
+                    </a>
+                    <a 
+                      href="#docs" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-white hover:text-[#3A7BD5] py-4 text-left text-lg font-medium transition-colors border-b border-white/5"
+                    >
+                      Docs
+                    </a>
+                    <a 
+                      href="#resources" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-white hover:text-[#3A7BD5] py-4 text-left text-lg font-medium transition-colors border-b border-white/5"
+                    >
+                      Resources
+                    </a>
+                    <a 
+                      href="#contact" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-white hover:text-[#3A7BD5] py-4 text-left text-lg font-medium transition-colors border-b border-white/5"
+                    >
+                      Contact
+                    </a>
+                    
+                    <Link 
+                      to="/reps" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-white hover:text-[#3A7BD5] py-4 text-left text-lg font-medium transition-colors mb-4"
+                    >
+                      Reps
+                    </Link>
+                    
+                    <a 
+                      href="https://app.kortexai.online"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="bg-[#3A7BD5] hover:bg-[#3168B5] text-white text-center py-4 rounded-xl text-sm font-semibold uppercase tracking-widest transition-all w-full flex items-center justify-center cursor-pointer mt-2 shadow-[0_0_20px_rgba(58,123,213,0.3)]"
+                    >
+                      Launch App
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>
@@ -703,13 +740,13 @@ export default function App() {
             </div>
           </FadeIn>
           
-          <div onScroll={handleScroll} className="feature-cards-container flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-[7.5vw] md:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] scroll-smooth relative">
+          <div onScroll={handleScroll} className="feature-cards-container flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-4 md:gap-8 px-[7.5vw] md:px-[calc(50vw-225px)] pb-12 hide-scrollbar w-full [mask-image:linear-gradient(to_right,transparent_0%,black_5%,black_95%,transparent_100%)] relative pointer-events-auto">
             
             {/* Card 1 - Practice Quizzes */}
             <FadeIn delay={0.1} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 0 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
-               <div className="absolute top-0 right-0 w-64 h-64 bg-[#3A7BD5]/10 blur-[60px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
+               <div className="absolute top-0 right-0 w-64 h-64 bg-[#3A7BD5]/10 blur-[60px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none transform-gpu" />
                
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm group-hover:bg-[#3A7BD5]/20 transition-colors text-[#3A7BD5]">
@@ -734,7 +771,7 @@ export default function App() {
             <FadeIn delay={0.2} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 1 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
-               <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
+               <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none transform-gpu" />
                
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm group-hover:bg-[#3A7BD5]/20 transition-colors text-[#3A7BD5]">
@@ -759,7 +796,7 @@ export default function App() {
             <FadeIn delay={0.3} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 2 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
-               <div className="absolute top-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
+               <div className="absolute top-0 right-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none transform-gpu" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm group-hover:bg-[#3A7BD5]/20 transition-colors text-[#3A7BD5]">
                    <PenTool className="w-6 h-6" />
@@ -782,7 +819,7 @@ export default function App() {
             <FadeIn delay={0.4} className="feature-card-wrapper w-[85vw] md:w-[450px] shrink-0 snap-center snap-always">
               <div className={`w-full dark-card p-0 relative overflow-hidden group flex flex-col shadow-[0_0_30px_rgba(0,0,0,0.5)] border transition-all duration-700 h-[480px] md:h-[500px] origin-center ${activeFeature === 3 ? 'border-[#3A7BD5]/50 scale-100 opacity-100 z-10' : 'border-white/5 scale-[0.93] opacity-55 shadow-none'}`}>
                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 to-transparent pointer-events-none" />
-               <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none" />
+               <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#3A7BD5]/10 blur-[50px] rounded-full group-hover:bg-[#3A7BD5]/20 transition-all pointer-events-none transform-gpu" />
                <div className="p-8 md:p-10 flex flex-col flex-1 z-10 relative">
                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 backdrop-blur-sm group-hover:bg-[#3A7BD5]/20 transition-colors text-[#3A7BD5]">
                    <Library className="w-6 h-6" />
@@ -905,7 +942,7 @@ export default function App() {
       {/* Testimonials Section */}
       <section id="testimonials" className="py-24 relative z-10 w-full overflow-hidden">
         <div className="absolute inset-0 bg-transparent -z-10" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-[#3A7BD5]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-[#3A7BD5]/5 blur-[120px] rounded-full pointer-events-none transform-gpu" />
 
         <div className="max-w-6xl mx-auto px-6 mb-16 relative">
           <div className="text-center max-w-2xl mx-auto">
@@ -997,7 +1034,7 @@ export default function App() {
               }} 
             />
             {/* Subtle glow in the center top */}
-            <div className="absolute top-[-50px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#3A7BD5]/10 blur-[100px] pointer-events-none rounded-full" />
+            <div className="absolute top-[-50px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#3A7BD5]/10 blur-[100px] pointer-events-none rounded-full transform-gpu" />
 
             <div className="flex flex-col items-center text-center mb-16 relative z-10">
               <div className="flex items-center gap-2 bg-[#1E293B]/50 border border-[#3A7BD5]/30 text-[#60A5FA] px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-[0_0_20px_rgba(58,123,213,0.1)] backdrop-blur-sm">
@@ -1103,7 +1140,7 @@ export default function App() {
                </FadeIn>
 
                <FadeIn delay={0.2} className="relative hidden lg:flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 via-[#00D2FF]/5 to-transparent rounded-3xl blur-[40px]" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#3A7BD5]/10 via-[#00D2FF]/5 to-transparent rounded-3xl blur-[40px] transform-gpu" />
                   <div className="dark-card h-full w-full max-h-[500px] overflow-hidden relative">
                     <div className="absolute inset-0 bg-[#3A7BD5]/5" />
                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-30 mix-blend-luminosity" />
@@ -1126,22 +1163,8 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#0c0c0e] pt-20 pb-8 relative z-20">
+      <footer className="border-t border-white/10 bg-[#0c0c0e] pt-12 pb-8 relative z-20">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-24">
-            <FadeIn>
-               <h2 className="text-3xl md:text-5xl font-serif text-white tracking-tight">Ready to make it happen?<br/>Get a quote today.</h2>
-            </FadeIn>
-            <FadeIn delay={0.1} className="w-full lg:w-[400px]">
-               <h5 className="font-semibold text-white mb-4 text-sm">Get Our News And Updates</h5>
-               <div className="flex gap-2 mb-3">
-                  <input type="text" placeholder="Enter your email" className="w-full bg-[#121218] border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-[#3A7BD5]/50 hover:bg-white/5 transition-colors" />
-                  <button className="bg-[#3A7BD5] text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#3168B5] transition-colors">Subscribe</button>
-               </div>
-               <p className="text-[11px] text-[#a1a1aa]">By subscribing you agree to our <a href="#" className="underline hover:text-white transition-colors">Privacy Policy</a></p>
-            </FadeIn>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
             <div className="col-span-1 md:col-span-4 pr-8">
               <FadeIn>
@@ -1191,6 +1214,7 @@ export default function App() {
                   <li><button onClick={() => navigateTo('/')} className="text-[#a1a1aa] text-sm hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Home</button></li>
                   <li><a href="https://app.kortexai.online" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">App</a></li>
                   <li><a href="#contact" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Contact</a></li>
+                  <li><Link to="/reps" className="text-[#a1a1aa] text-sm hover:text-white transition-colors">Reps</Link></li>
                 </ul>
               </div>
               
