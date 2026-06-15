@@ -10,6 +10,7 @@ const Reps = () => {
     phone: '',
     class: '',
     department: '',
+    whyAmbassador: '',
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -81,7 +82,7 @@ const Reps = () => {
               </div>
               <h2 className="text-3xl font-serif text-white mb-4 relative z-10">Registration Successful</h2>
               <p className="text-[#94A3B8] text-lg leading-relaxed mb-8 relative z-10">
-                Thank you for applying to be a Kortex AI representative. We have sent your details to kortexai.33@gmail.com and our team will get in touch with you shortly.
+                Thank you for applying to be a Kortex AI representative. Your application has been received and our team will get in touch with you shortly.
               </p>
               <Link 
                 to="/"
@@ -170,6 +171,19 @@ const Reps = () => {
                       placeholder="E.g. 300L"
                     />
                   </div>
+                </div>
+
+                <div className="pt-2">
+                  <label htmlFor="whyAmbassador" className="block text-sm font-medium text-[#94A3B8] mb-2">Why should we make you our ambassador?</label>
+                  <textarea 
+                    id="whyAmbassador" 
+                    name="whyAmbassador" 
+                    required
+                    value={formData.whyAmbassador}
+                    onChange={(e) => setFormData(prev => ({ ...prev, whyAmbassador: e.target.value }))}
+                    className="w-full bg-[#020617] border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-[#3A7BD5] focus:ring-1 focus:ring-[#3A7BD5]/50 transition-all placeholder:text-white/20 min-h-[120px] resize-y"
+                    placeholder="Tell us about yourself and why you believe you'd be a good fit..."
+                  />
                 </div>
 
                 <div className="pt-4">
