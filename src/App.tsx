@@ -1061,7 +1061,7 @@ export default function App() {
                 {[
                   { q: "What happens if I answer practice questions incorrectly?", a: "KortexAi doesn't just mark it wrong. It will re-explain the concept using a different approach and guide you to discover the correct answer on your own." },
                   { q: "Can KortexAi grade my essays and assignments?", a: "Yes! You can paste your drafts into KortexAi, and it will provide detailed, actionable feedback, highlight areas of improvement, and verify your arguments." },
-                  { q: "How do I get started?", a: "Simply sign up for an account, create a new course folder, and start uploading your materials or pasting your notes. The AI will guide you from there!" }
+                  { q: "How do I get started?", a: "Simply sign up for an account, access your personalized course library, and begin studying with AI assistance. Explore interactive questions, get instant answers, and chat directly with Kortex to master your subjects." }
                 ].map((faq, i) => (
                   <FAQItem key={i} q={faq.q} a={faq.a} isOpen={openFaq === faq.q} onToggle={() => setOpenFaq(openFaq === faq.q ? null : faq.q)} />
                 ))}
